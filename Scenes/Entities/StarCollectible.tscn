@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbahjercavdie"]
+
+[ext_resource type="Script" path="res://Scripts/Entities/StarCollectible.cs" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://yellowstar001" path="res://Images/yellowstar.png" id="2_yellowstar"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_star"]
+radius = 30.0
+
+[node name="StarCollectible" type="Area2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_script")
+Speed = 150.0
+RotationSpeed = 2.0
+
+[node name="Sprite" type="TextureRect" parent="."]
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+texture = ExtResource("2_yellowstar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_star")

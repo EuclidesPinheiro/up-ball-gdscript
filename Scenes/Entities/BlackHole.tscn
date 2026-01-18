@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dblackhole001"]
+
+[ext_resource type="Script" path="res://Scripts/Entities/BlackHole.cs" id="1_blackhole"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_blackhole"]
+radius = 40.0
+
+[node name="BlackHole" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_blackhole")
+Speed = 150.0
+
+[node name="OuterRing" type="Polygon2D" parent="."]
+color = Color(0.15, 0.15, 0.15, 1)
+polygon = PackedVector2Array(-40, 0, -39, -12, -35, -23, -28, -32, -19, -38, -8, -40, 8, -40, 19, -38, 28, -32, 35, -23, 39, -12, 40, 0, 39, 12, 35, 23, 28, 32, 19, 38, 8, 40, -8, 40, -19, 38, -28, 32, -35, 23, -39, 12)
+
+[node name="InnerCircle" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-30, 0, -29, -9, -26, -17, -21, -24, -14, -28, -6, -30, 6, -30, 14, -28, 21, -24, 26, -17, 29, -9, 30, 0, 29, 9, 26, 17, 21, 24, 14, 28, 6, 30, -6, 30, -14, 28, -21, 24, -26, 17, -29, 9)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_blackhole")

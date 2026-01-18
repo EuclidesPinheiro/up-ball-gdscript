@@ -1,0 +1,51 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="UpBall"
+run/main_scene="res://Scenes/UI/MainMenu.tscn"
+config/features=PackedStringArray("4.5", "C#", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*res://Scripts/Managers/GameManager.cs"
+AudioManager="*res://Scripts/Managers/AudioManager.cs"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_width"
+window/handheld/orientation=1
+
+[dotnet]
+
+project/assembly_name="UpBall"
+
+[input]
+
+touch={
+"deadzone": 0.5,
+"events": [Object(InputEventScreenTouch,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"index":0,"position":Vector2(0, 0),"canceled":false,"pressed":false,"double_tap":false,"script":null)
+]
+}
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

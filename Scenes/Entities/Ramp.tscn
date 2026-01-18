@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://dramp001"]
+
+[ext_resource type="Script" path="res://Scripts/Entities/Ramp.cs" id="1_ramp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ramp"]
+size = Vector2(500, 20)
+
+[node name="Ramp" type="Node2D"]
+script = ExtResource("1_ramp")
+MaxRotationDegrees = 30.0
+DragSensitivity = 0.3
+RotationSmoothing = 10.0
+
+[node name="Platform" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platform"]
+scale = Vector2(1, 1)
+modulate = Color(0.3, 0.3, 0.4, 1)
+
+[node name="ColorRect" type="ColorRect" parent="Platform"]
+offset_left = -250.0
+offset_top = -10.0
+offset_right = 250.0
+offset_bottom = 10.0
+color = Color(0.25, 0.25, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+shape = SubResource("RectangleShape2D_ramp")
+
+[node name="LeftEdge" type="StaticBody2D" parent="."]
+position = Vector2(-260, -30)
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftEdge"]
+shape = SubResource("RectangleShape2D_ramp")
+disabled = true
+
+[node name="RightEdge" type="StaticBody2D" parent="."]
+position = Vector2(260, -30)
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightEdge"]
+shape = SubResource("RectangleShape2D_ramp")
+disabled = true

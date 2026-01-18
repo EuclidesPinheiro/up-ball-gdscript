@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhud001"]
+
+[ext_resource type="Script" path="res://Scripts/UI/HUD.cs" id="1_hud"]
+[ext_resource type="Texture2D" uid="uid://yellowstar001" path="res://Images/yellowstar.png" id="2_yellowstar"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="LevelLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 20.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(0.3, 0.3, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Level 1"
+horizontal_alignment = 1
+
+[node name="StarContainer" type="HBoxContainer" parent="."]
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 120.0
+offset_bottom = 55.0
+theme_override_constants/separation = 8
+
+[node name="StarIcon" type="TextureRect" parent="StarContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_yellowstar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StarCountLabel" type="Label" parent="StarContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.3, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "0/5"
+vertical_alignment = 1
+
+[node name="PauseButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -70.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 18
+text = "| |"
