@@ -2,7 +2,7 @@ class_name ObstacleSpawner
 extends Node2D
 
 ## Sistema de spawn de obstáculos e estrelas coletáveis.
-## Gera buracos pretos, o buraco amarelo (objetivo) e estrelas.
+## Spawna em posições fixas definidas pelo LevelConfig.
 
 # Packed scenes for obstacles and collectibles
 @export var black_hole_scene: PackedScene
@@ -11,36 +11,23 @@ extends Node2D
 
 # Spawn settings
 @export var spawn_y: float = -100.0
-@export var min_x: float = 100.0
-@export var max_x: float = 620.0
+@export var min_x: float = 150.0
+@export var max_x: float = 570.0
 
-# Timer for spawning
+# Level configuration
+var _level_config: LevelConfig
+var _spawn_queue: Array = []  # Queue of items to spawn: {type, x_position}
 var _spawn_timer: Timer
-var _star_timer: Timer
-var _obstacles_spawned: int = 0
-var _stars_spawned: int = 0
-var _target_obstacles: int = 5
-var _target_stars: int = 5
-var _current_speed: float = 150.0
-var _goal_spawned: bool = false
+var _current_speed: float = 120.0
 var _is_active: bool = false
-
-# Track positions to avoid overlapping
-var _recent_spawn_x: Array[float] = []
 
 
 func _ready() -> void:
-	# Create spawn timer for obstacles
+	# Create spawn timer
 	_spawn_timer = Timer.new()
-	_spawn_timer.one_shot = false
+	_spawn_timer.one_shot = true
 	_spawn_timer.timeout.connect(_on_spawn_timeout)
 	add_child(_spawn_timer)
-	
-	# Create spawn timer for stars
-	_star_timer = Timer.new()
-	_star_timer.one_shot = false
-	_star_timer.timeout.connect(_on_star_spawn_timeout)
-	add_child(_star_timer)
 	
 	# Connect to GameManager signals
 	if GameManager:
@@ -49,31 +36,35 @@ func _ready() -> void:
 
 
 func start_spawning(level: int) -> void:
-	_obstacles_spawned = 0
-	_stars_spawned = 0
-	_goal_spawned = false
+	print("[ObstacleSpawner] start_spawning called for level: ", level)
 	_is_active = true
-	_recent_spawn_x.clear()
+	_spawn_queue.clear()
 	
-	# Get difficulty settings from GameManager
-	_current_speed = GameManager.obstacle_speed if GameManager else (100.0 + level * 20.0)
-	_target_obstacles = GameManager.obstacles_per_level if GameManager else (3 + level)
-	_target_stars = GameManager.stars_per_level if GameManager else (3 + level)
-	var interval: float = GameManager.spawn_interval if GameManager else maxf(1.5 - level * 0.1, 0.5)
+	# Get level configuration
+	_level_config = LevelConfig.get_config_for_level(level)
+	_current_speed = _level_config.obstacle_speed
 	
-	# Start obstacle spawning
-	_spawn_timer.wait_time = interval
-	_spawn_timer.start()
+	print("[ObstacleSpawner] Config loaded - Stars: ", _level_config.star_positions.size(), 
+		  " BlackHoles: ", _level_config.black_hole_positions.size(),
+		  " Speed: ", _current_speed)
 	
-	# Start star spawning (slightly offset from obstacles)
-	_star_timer.wait_time = interval * 0.7  # Stars spawn more frequently
-	_star_timer.start()
+	# Build spawn queue based on level config
+	_build_spawn_queue()
+	
+	print("[ObstacleSpawner] Queue built with ", _spawn_queue.size(), " items")
+	
+	# Update GameManager with total stars for this level
+	if GameManager:
+		GameManager.total_stars_in_level = _level_config.star_positions.size()
+	
+	# Start spawning
+	_spawn_next()
 
 
 func stop_spawning() -> void:
 	_is_active = false
 	_spawn_timer.stop()
-	_star_timer.stop()
+	_spawn_queue.clear()
 
 
 func clear_obstacles() -> void:
@@ -84,99 +75,84 @@ func clear_obstacles() -> void:
 			child.queue_free()
 
 
+func _build_spawn_queue() -> void:
+	# Build the queue of items to spawn in order
+	# First spawned = will be lowest on screen when everything spawns
+	# Order: Black holes FIRST (bottom), then stars (middle), then goal LAST (top)
+	
+	# Add black holes to queue FIRST (so they're at the bottom)
+	for x_pos in _level_config.black_hole_positions:
+		_spawn_queue.append({"type": "black_hole", "x": x_pos})
+	
+	# Add stars to queue (so they're in the middle)
+	for x_pos in _level_config.star_positions:
+		_spawn_queue.append({"type": "star", "x": x_pos})
+	
+	# Add goal (yellow hole) LAST (so it's at the top)
+	_spawn_queue.append({"type": "goal", "x": _level_config.goal_position_x})
+
+
+func _spawn_next() -> void:
+	if not _is_active or _spawn_queue.is_empty():
+		print("[ObstacleSpawner] Queue empty or inactive. Active: ", _is_active, " Queue size: ", _spawn_queue.size())
+		return
+	
+	# Get next item from queue
+	var item = _spawn_queue.pop_front()
+	var item_type: String = item["type"]
+	var item_x: float = item["x"]
+	
+	print("[ObstacleSpawner] Spawning: ", item_type, " at x=", item_x)
+	
+	match item_type:
+		"star":
+			_spawn_star_at(item_x)
+		"black_hole":
+			_spawn_black_hole_at(item_x)
+		"goal":
+			_spawn_yellow_hole_at(item_x)
+			return  # Goal is last, don't continue timer
+	
+	# Schedule next spawn
+	_spawn_timer.wait_time = _level_config.spawn_interval
+	_spawn_timer.start()
+
+
 func _on_spawn_timeout() -> void:
-	if not _is_active:
-		return
-	
-	if _obstacles_spawned < _target_obstacles:
-		_spawn_black_hole()
-		_obstacles_spawned += 1
-	elif not _goal_spawned:
-		_spawn_yellow_hole()
-		_goal_spawned = true
-		_spawn_timer.stop()
-		_star_timer.stop()  # Stop spawning stars when goal appears
+	_spawn_next()
 
 
-func _on_star_spawn_timeout() -> void:
-	if not _is_active or _goal_spawned:
-		return
-	
-	if _stars_spawned < _target_stars:
-		_spawn_star()
-		_stars_spawned += 1
-
-
-func _spawn_black_hole() -> void:
+func _spawn_black_hole_at(x_pos: float) -> void:
 	if black_hole_scene == null:
 		push_error("BlackHoleScene not assigned!")
 		return
 	
 	var hole: BlackHole = black_hole_scene.instantiate()
-	var x: float = _get_random_x_avoiding_recent()
-	hole.position = Vector2(x, spawn_y)
+	hole.position = Vector2(x_pos, spawn_y)
 	hole.set_speed(_current_speed)
 	get_parent().add_child(hole)
-	
-	_track_spawn_x(x)
 
 
-func _spawn_yellow_hole() -> void:
+func _spawn_yellow_hole_at(x_pos: float) -> void:
 	if yellow_hole_scene == null:
 		push_error("YellowHoleScene not assigned!")
 		return
 	
 	var goal: YellowHole = yellow_hole_scene.instantiate()
-	goal.position = Vector2(_get_random_x(), spawn_y)
+	goal.position = Vector2(x_pos, spawn_y)
 	goal.set_speed(_current_speed)
 	get_parent().add_child(goal)
 
 
-func _spawn_star() -> void:
+func _spawn_star_at(x_pos: float) -> void:
 	if star_scene == null:
 		push_error("StarScene not assigned!")
 		return
 	
 	var star: StarCollectible = star_scene.instantiate()
-	var x: float = _get_random_x_avoiding_recent()
-	star.position = Vector2(x, spawn_y)
-	star.set_speed(_current_speed * 0.9)  # Stars move slightly slower
+	star.position = Vector2(x_pos, spawn_y)
+	star.set_speed(_current_speed)  # Same speed as other obstacles
 	get_parent().add_child(star)
-	
-	_track_spawn_x(x)
-
-
-func _get_random_x() -> float:
-	return randf_range(min_x, max_x)
-
-
-func _get_random_x_avoiding_recent() -> float:
-	var x: float
-	var attempts: int = 0
-	const MIN_DISTANCE: float = 80.0
-	
-	while attempts <= 10:
-		x = _get_random_x()
-		attempts += 1
-		
-		# Check if far enough from recent spawns
-		var too_close: bool = false
-		for recent_x in _recent_spawn_x:
-			if absf(x - recent_x) < MIN_DISTANCE:
-				too_close = true
-				break
-		
-		if not too_close or attempts > 10:
-			break
-	
-	return x
-
-
-func _track_spawn_x(x: float) -> void:
-	_recent_spawn_x.append(x)
-	# Keep only last 3 positions
-	if _recent_spawn_x.size() > 3:
-		_recent_spawn_x.remove_at(0)
 
 
 func _on_level_changed(level: int) -> void:

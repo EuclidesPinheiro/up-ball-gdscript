@@ -34,20 +34,25 @@ var stars_collected_in_level: int = 0
 var total_stars_in_level: int = 0
 var stars_per_level: int:
 	get:
-		return 3 + current_level  # Number of star collectibles per level
+		# Get from level config if available
+		var config = LevelConfig.get_config_for_level(current_level)
+		return config.star_positions.size()
 
-# Difficulty settings per level
+# Difficulty settings per level (now mainly handled by LevelConfig)
 var obstacle_speed: float:
 	get:
-		return 100.0 + (current_level * 20.0)
+		var config = LevelConfig.get_config_for_level(current_level)
+		return config.obstacle_speed
 
 var spawn_interval: float:
 	get:
-		return maxf(1.5 - (current_level * 0.1), 0.5)
+		var config = LevelConfig.get_config_for_level(current_level)
+		return config.spawn_interval
 
 var obstacles_per_level: int:
 	get:
-		return 3 + current_level
+		var config = LevelConfig.get_config_for_level(current_level)
+		return config.black_hole_positions.size()
 
 # Signals
 signal state_changed(new_state: int)

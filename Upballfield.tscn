@@ -30,8 +30,6 @@ script = ExtResource("4_spawner")
 black_hole_scene = ExtResource("5_blackhole")
 yellow_hole_scene = ExtResource("6_yellowhole")
 star_scene = ExtResource("7_star")
-min_x = 150.0
-max_x = 570.0
 
 [node name="HUD" parent="." instance=ExtResource("8_hud")]
 
