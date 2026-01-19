@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhud001"]
 
-[ext_resource type="Script" path="res://Scripts/UI/HUD.cs" id="1_hud"]
-[ext_resource type="Texture2D" uid="uid://yellowstar001" path="res://Images/yellowstar.png" id="2_yellowstar"]
+[ext_resource type="Script" uid="uid://ccq0v1qo03kyb" path="res://Scripts/UI/hud.gd" id="1_hud"]
+[ext_resource type="Texture2D" uid="uid://can6day3fwaij" path="res://Images/yellowstar.png" id="2_yellowstar"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -20,11 +20,6 @@ text = "Level 1"
 horizontal_alignment = 1
 
 [node name="StarContainer" type="HBoxContainer" parent="."]
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 offset_left = 15.0
 offset_top = 15.0
 offset_right = 120.0

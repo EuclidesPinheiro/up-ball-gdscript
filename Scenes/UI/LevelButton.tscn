@@ -1,16 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://dys53eoev14iu"]
+[gd_scene load_steps=4 format=3 uid="uid://dys53eoev14iu"]
 
-[ext_resource type="Script" path="res://Scripts/UI/LevelButton.cs" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://yellowstar001" path="res://Images/yellowstar.png" id="2_yellowstar"]
-[ext_resource type="Texture2D" uid="uid://darkstar001" path="res://Images/darkstar.png" id="3_darkstar"]
+[ext_resource type="Script" uid="uid://crjcit2442hde" path="res://Scripts/UI/level_button.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://can6day3fwaij" path="res://Images/yellowstar.png" id="2_yellowstar"]
+[ext_resource type="Texture2D" uid="uid://cnovivv8sp6qa" path="res://Images/darkstar.png" id="3_darkstar"]
 
 [node name="LevelButton" type="Control"]
 custom_minimum_size = Vector2(100, 130)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_script")
-YellowStarTexture = ExtResource("2_yellowstar")
-DarkStarTexture = ExtResource("3_darkstar")
+yellow_star_texture = ExtResource("2_yellowstar")
+dark_star_texture = ExtResource("3_darkstar")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1

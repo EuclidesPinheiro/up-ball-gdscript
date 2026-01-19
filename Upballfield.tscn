@@ -1,12 +1,12 @@
 [gd_scene load_steps=11 format=3 uid="uid://buj0kvsagpgyg"]
 
-[ext_resource type="Script" path="res://Scripts/Upballfield.cs" id="1_upballfield"]
+[ext_resource type="Script" uid="uid://ggxqniveuh0g" path="res://Scripts/upballfield.gd" id="1_upballfield"]
 [ext_resource type="PackedScene" uid="uid://dball001" path="res://Scenes/Entities/Ball.tscn" id="2_ball"]
 [ext_resource type="PackedScene" uid="uid://dramp001" path="res://Scenes/Entities/Ramp.tscn" id="3_ramp"]
-[ext_resource type="Script" path="res://Scripts/Entities/ObstacleSpawner.cs" id="4_spawner"]
+[ext_resource type="Script" uid="uid://dh4banvi2edm6" path="res://Scripts/Entities/obstacle_spawner.gd" id="4_spawner"]
 [ext_resource type="PackedScene" uid="uid://dblackhole001" path="res://Scenes/Entities/BlackHole.tscn" id="5_blackhole"]
-[ext_resource type="PackedScene" uid="uid://dyellowhole001" path="res://Scenes/Entities/YellowHole.tscn" id="6_yellowhole"]
-[ext_resource type="PackedScene" uid="uid://starcollect001" path="res://Scenes/Entities/StarCollectible.tscn" id="7_star"]
+[ext_resource type="PackedScene" uid="uid://cpjqs32miw0rk" path="res://Scenes/Entities/YellowHole.tscn" id="6_yellowhole"]
+[ext_resource type="PackedScene" uid="uid://bbahjercavdie" path="res://Scenes/Entities/StarCollectible.tscn" id="7_star"]
 [ext_resource type="PackedScene" uid="uid://dhud001" path="res://Scenes/UI/HUD.tscn" id="8_hud"]
 [ext_resource type="PackedScene" uid="uid://dgameover001" path="res://Scenes/UI/GameOverUI.tscn" id="9_gameover"]
 [ext_resource type="PackedScene" uid="uid://dvictory001" path="res://Scenes/UI/VictoryUI.tscn" id="10_victory"]
@@ -27,12 +27,11 @@ position = Vector2(360, 950)
 
 [node name="ObstacleSpawner" type="Node2D" parent="."]
 script = ExtResource("4_spawner")
-BlackHoleScene = ExtResource("5_blackhole")
-YellowHoleScene = ExtResource("6_yellowhole")
-StarScene = ExtResource("7_star")
-SpawnY = -100.0
-MinX = 150.0
-MaxX = 570.0
+black_hole_scene = ExtResource("5_blackhole")
+yellow_hole_scene = ExtResource("6_yellowhole")
+star_scene = ExtResource("7_star")
+min_x = 150.0
+max_x = 570.0
 
 [node name="HUD" parent="." instance=ExtResource("8_hud")]
 
@@ -41,6 +40,10 @@ layer = 10
 
 [node name="GameOverUI" parent="UILayer" instance=ExtResource("9_gameover")]
 visible = false
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VictoryUI" parent="UILayer" instance=ExtResource("10_victory")]
 visible = false
+grow_horizontal = 2
+grow_vertical = 2

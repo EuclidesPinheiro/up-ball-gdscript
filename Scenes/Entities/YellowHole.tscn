@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dyellowhole001"]
+[gd_scene load_steps=3 format=3 uid="uid://cpjqs32miw0rk"]
 
-[ext_resource type="Script" path="res://Scripts/Entities/YellowHole.cs" id="1_yellowhole"]
+[ext_resource type="Script" uid="uid://wc88w8jkou8e" path="res://Scripts/Entities/yellow_hole.gd" id="1_yellowhole"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yellowhole"]
 radius = 45.0
@@ -9,7 +9,6 @@ radius = 45.0
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_yellowhole")
-Speed = 150.0
 
 [node name="OuterGlow" type="Polygon2D" parent="."]
 color = Color(1, 0.9, 0.3, 0.4)
