@@ -40,8 +40,6 @@ layer = 10
 
 [node name="GameOverUI" parent="UILayer" instance=ExtResource("9_gameover")]
 visible = false
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="VictoryUI" parent="UILayer" instance=ExtResource("10_victory")]
 visible = false
